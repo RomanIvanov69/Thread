@@ -4,7 +4,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
-import ru.netology.nmedia.repository.*
+import ru.netology.nmedia.repository.PostRepository
+import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
 import java.io.IOException
 import kotlin.concurrent.thread
@@ -15,7 +16,7 @@ private val empty = Post(
     author = "",
     likedByMe = false,
     likes = 0,
-    published = ""
+    published = 0
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -72,6 +73,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun likeById(id: Long) {
         thread { repository.likeById(id) }
+    }
+
+    fun unlikeById(id: Long) {
+        thread { repository.unlikeById(id) }
     }
 
     fun removeById(id: Long) {
