@@ -12,11 +12,11 @@ import kotlin.concurrent.thread
 
 private val empty = Post(
     id = 0,
+    author = "Me",
     content = "",
-    author = "",
+    published = 0L,
     likedByMe = false,
-    likes = 0,
-    published = 0,
+    likes = 0
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
