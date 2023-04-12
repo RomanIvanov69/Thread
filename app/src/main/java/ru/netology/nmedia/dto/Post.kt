@@ -1,11 +1,11 @@
 package ru.netology.nmedia.dto
 
 data class Post(
-    val id: Long,
-    val author: String,
-    val content: String,
-    val published: Long,
-    val likedByMe: Boolean,
-    val likes: Int = 0,
+    val id: Long = 0L,
+    val author: String = "",
+    val content: String = "", //Текст сообщения
+    val published: Long = 0, //Дата и время публикации
+    val likedByMe: Boolean = false, //Лайк включен или отключен
+    val likes: Long = 0L //Счётчик лайков
 )
 
