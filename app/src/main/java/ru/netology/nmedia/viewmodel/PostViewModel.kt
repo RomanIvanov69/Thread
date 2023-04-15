@@ -20,32 +20,32 @@ private val empty = Post(
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-    // упрощённый вариант
+
     private val repository: PostRepository = PostRepositoryImpl()
-    private val _data = MutableLiveData(FeedModel())
+
+    private val _data = MutableLiveData<FeedModel>()
     val data: LiveData<FeedModel>
         get() = _data
-    val edited = MutableLiveData(empty)
+
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
+
+    private val edited = MutableLiveData(empty)
 
     init {
         loadPosts()
     }
 
     fun loadPosts() {
+        _data.value = FeedModel(loading = true)
         thread {
-            // Начинаем загрузку
-            _data.postValue(FeedModel(loading = true))
             try {
-                // Данные успешно получены
                 val posts = repository.getAll()
-                FeedModel(posts = posts, empty = posts.isEmpty())
-            } catch (e: IOException) {
-                // Получена ошибка
-                FeedModel(error = true)
-            }.also(_data::postValue)
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+            } catch (e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
         }
     }
 
@@ -75,9 +75,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         thread { repository.likeById(id) }
     }
 
-    fun unlikeById(id: Long) {
-        thread { repository.unlikeById(id) }
-    }
 
     fun removeById(id: Long) {
         thread {
@@ -96,3 +93,5 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 }
+
+

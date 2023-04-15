@@ -6,7 +6,9 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import okhttp3.internal.notifyAll
 import ru.netology.nmedia.R
+import ru.netology.nmedia.clickCount
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import java.text.SimpleDateFormat
@@ -45,7 +47,8 @@ class PostViewHolder(
             content.text = post.content
             // в адаптере
             like.isChecked = post.likedByMe
-            like.text = "${post.likes}"
+            like.text = clickCount(post.likes)
+
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

@@ -22,17 +22,15 @@ class PostRepositoryImpl : PostRepository {
         private val jsonType = "application/json".toMediaType()
     }
 
-    override fun getAll(): List<Post> {
-        val request: Request = Request.Builder()
-            .url("${BASE_URL}/api/slow/posts")
+    override fun getAll():List<Post> {
+        val request = Request.Builder()
+            .url("$BASE_URL/api/slow/posts")
             .build()
 
         return client.newCall(request)
             .execute()
-            .let { it.body?.string() ?: throw RuntimeException("body is null") }
-            .let {
-                gson.fromJson(it, typeToken.type)
-            }
+            .let{requireNotNull(it.body?.string()) {"body is null"} }
+            .let {gson.fromJson(it,typeToken)}
     }
 
     override fun likeById(id: Long) {
@@ -57,13 +55,14 @@ class PostRepositoryImpl : PostRepository {
             .close()
     }
 
+
     override fun save(post: Post) {
-        val request: Request = Request.Builder()
+        val request = Request.Builder()
+            .url("$BASE_URL/api/slow/posts")
             .post(gson.toJson(post).toRequestBody(jsonType))
-            .url("${BASE_URL}/api/slow/posts")
             .build()
 
-        client.newCall(request)
+        return client.newCall(request)
             .execute()
             .close()
     }
@@ -80,7 +79,6 @@ class PostRepositoryImpl : PostRepository {
     }
 
 }
-
 
 
 

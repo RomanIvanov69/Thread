@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
@@ -18,7 +19,9 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 
 class FeedFragment : Fragment() {
 
-    private val viewModel: PostViewModel by activityViewModels()
+    val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,16 +31,13 @@ class FeedFragment : Fragment() {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
         val adapter = PostsAdapter(object : OnInteractionListener {
+
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
             }
 
             override fun onLike(post: Post) {
-                if(!post.likedByMe) {
-                    viewModel.likeById(post.id)
-                } else {
-                    viewModel.unlikeById(post.id)
-                }
+                viewModel.likeById(post.id)
             }
 
             override fun onRemove(post: Post) {
@@ -56,6 +56,7 @@ class FeedFragment : Fragment() {
                 startActivity(shareIntent)
             }
         })
+
         binding.list.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts)
