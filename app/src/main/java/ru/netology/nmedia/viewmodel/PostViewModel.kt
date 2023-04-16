@@ -38,14 +38,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadPosts() {
-        _data.value = FeedModel(loading = true)
         thread {
+            _data.postValue(FeedModel(loading = true))
             try {
                 val posts = repository.getAll()
-                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+                FeedModel(posts = posts, empty = posts.isEmpty())
             } catch (e: Exception) {
-                _data.postValue(FeedModel(error = true))
-            }
+                FeedModel(error = true)
+            }.also { _data::postValue }
         }
     }
 
@@ -72,9 +72,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) {
-        thread { repository.likeById(id) }
+        thread { repository.likeById(id)
+            loadPosts()}
     }
-
+    fun unlikeById(id: Long) {
+        thread { repository.unlikeById(id)
+            loadPosts()}
+    }
 
     fun removeById(id: Long) {
         thread {
