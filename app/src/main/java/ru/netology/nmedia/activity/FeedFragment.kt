@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -22,6 +23,7 @@ class FeedFragment : Fragment() {
     val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+    lateinit var swipeCase:SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,6 +79,12 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
+        swipeCase = binding.swiperefresh
+        swipeCase.setOnRefreshListener {
+            viewModel.loadPosts()
+            swipeCase.isRefreshing = false
+        }
+        
         return binding.root
     }
 }
