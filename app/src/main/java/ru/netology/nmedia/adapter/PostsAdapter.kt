@@ -6,6 +6,7 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import okhttp3.internal.notifyAll
 import ru.netology.nmedia.R
 import ru.netology.nmedia.clickCount
@@ -77,6 +78,16 @@ class PostViewHolder(
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+            val url = "http://192.168.1.109:9999"
+
+            Glide.with(avatar)
+                .load("$url/avatars/${post.authorAvatar}")
+                .error(R.drawable.ic_error_24)
+                .placeholder(R.drawable.ic_downloading_24)
+                .circleCrop()
+                .timeout(10_000)
+                .into(avatar)
         }
     }
 }
