@@ -2,6 +2,7 @@ package ru.netology.nmedia.repository
 
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import ru.netology.nmedia.api.PostApi
 import ru.netology.nmedia.dto.Post
 
@@ -13,7 +14,7 @@ class PostRepositoryImpl : PostRepository {
             .enqueue(object : Callback<List<Post>> {
                 override fun onResponse(
                     call: Call<List<Post>>,
-                    response: retrofit2.Response<List<Post>>
+                    response: Response<List<Post>>
                 ) {
                     if (!response.isSuccessful) {
                         postsCallback.onError(RuntimeException(response.message()))
@@ -53,7 +54,7 @@ class PostRepositoryImpl : PostRepository {
     override fun removeById(id: Long, postsCallback: PostRepository.PostsCallback<Unit>) {
         PostApi.service.deletePostById(id)
             .enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: retrofit2.Response<Unit>) {
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                     if (!response.isSuccessful) {
                         postsCallback.onError(RuntimeException(response.message()))
                         return
@@ -73,7 +74,7 @@ class PostRepositoryImpl : PostRepository {
     override fun likeById(id: Long, postsCallback: PostRepository.PostsCallback<Post>) {
         PostApi.service.likeById(id)
             .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: retrofit2.Response<Post>) {
+                override fun onResponse(call: Call<Post>, response: Response<Post>) {
                     if (!response.isSuccessful) {
                         postsCallback.onError(RuntimeException(response.message()))
                         return
@@ -92,9 +93,9 @@ class PostRepositoryImpl : PostRepository {
 
 
     override fun unlikeById(id: Long, postsCallback: PostRepository.PostsCallback<Post>) {
-        PostApi.service.likeById(id)
+        PostApi.service.unlikeById(id)
             .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: retrofit2.Response<Post>) {
+                override fun onResponse(call: Call<Post>, response: Response<Post>) {
                     if (!response.isSuccessful) {
                         postsCallback.onError(RuntimeException(response.message()))
                         return
@@ -107,11 +108,8 @@ class PostRepositoryImpl : PostRepository {
                 override fun onFailure(call: Call<Post>, t: Throwable) {
                     postsCallback.onError(RuntimeException(t))
                 }
-
             })
-
     }
-
 }
 
 

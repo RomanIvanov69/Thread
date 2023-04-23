@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.R
+import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
@@ -36,15 +37,14 @@ class FeedFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment,
+                    Bundle().apply
+                    { textArg = post.content })
             }
 
             override fun onLike(post: Post) {
-                if(!post.likedByMe) {
-                    viewModel.likeById(post.id)
-                } else {
-                    viewModel.unlikeById(post.id)
+                    viewModel.likeById(post)
                 }
-            }
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
@@ -69,6 +69,17 @@ class FeedFragment : Fragment() {
             binding.progress.isVisible = state.loading
             binding.errorGroup.isVisible = state.error
             binding.emptyText.isVisible = state.empty
+        }
+
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            adapter.submitList(state.posts)
+            with(binding) {
+                serverErrorGroup.isVisible = state.serverError
+                serverErrorButton.setOnClickListener {
+                    viewModel.loadPosts()
+                    serverErrorGroup.visibility = View.GONE
+                }
+            }
         }
 
         binding.retryButton.setOnClickListener {
