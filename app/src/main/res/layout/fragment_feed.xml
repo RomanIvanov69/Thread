@@ -10,7 +10,7 @@
         android:id="@+id/serverError"
         android:layout_width="@dimen/server_width"
         android:layout_height="@dimen/server_height"
-        android:src="@drawable/ic_no_server"
+        android:src="@drawable/no_network"
         android:text="@string/error_loading"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,10 +23,10 @@
         android:layout_height="wrap_content"
         android:text="@string/server_error"
         android:backgroundTint="@color/colorServer"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/serverError"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/serverError" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/serverErrorGroup"

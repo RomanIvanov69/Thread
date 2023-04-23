@@ -46,7 +46,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
 
             override fun onError(e: Exception) {
-                _data.value = FeedModel(error = true)
+                _data.value = FeedModel(error = true, serverError = true)
             }
         })
     }
