@@ -1,116 +1,63 @@
 package ru.netology.nmedia.repository
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import ru.netology.nmedia.api.PostApi
+import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.entity.PostEntity
 
 
-class PostRepositoryImpl : PostRepository {
+class PostRepositoryImpl(private val postDao: PostDao) : PostRepository {
 
-    override fun getAllAsync(postsCallback: PostRepository.PostsCallback<List<Post>>) {
-        PostApi.service.getAll()
-            .enqueue(object : Callback<List<Post>> {
-                override fun onResponse(
-                    call: Call<List<Post>>,
-                    response: Response<List<Post>>
-                ) {
-                    if (!response.isSuccessful) {
-                        postsCallback.onError(RuntimeException(response.message()))
-                        return
-                    }
-                    postsCallback.onSuccess(
-                        response.body() ?: throw RuntimeException("body is null")
-                    )
-                }
+    override val data: LiveData<List<Post>> =
+        postDao.getAll().map { it.map(PostEntity::toDto) }
 
-                override fun onFailure(call: retrofit2.Call<List<Post>>, t: Throwable) {
-                    postsCallback.onError(RuntimeException(t))
-                }
-            })
+
+    override suspend fun getAll() {
+        val response = PostApi.service.getAll()
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
+        val posts = response.body() ?: throw RuntimeException("body is null")
+        postDao.insert(posts.map { PostEntity.fromDto(it) })
     }
 
-    override fun save(post: Post, postsCallback: PostRepository.PostsCallback<Post>) {
-        PostApi.service.save(post)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: retrofit2.Response<Post>) {
-                    if (!response.isSuccessful) {
-                        postsCallback.onError(RuntimeException(response.message()))
-                        return
-                    }
-                    postsCallback.onSuccess(
-                        response.body() ?: throw RuntimeException("body is null")
-                    )
-
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    postsCallback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun likeById(id: Long) {
+        postDao.likeById(id)
+        val response = PostApi.service.likeById(id)
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
     }
 
-    override fun removeById(id: Long, postsCallback: PostRepository.PostsCallback<Unit>) {
-        PostApi.service.deletePostById(id)
-            .enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (!response.isSuccessful) {
-                        postsCallback.onError(RuntimeException(response.message()))
-                        return
-                    }
-                    postsCallback.onSuccess(
-                        response.body() ?: throw RuntimeException("body is null")
-                    )
-                }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    postsCallback.onError(RuntimeException(t))
-                }
-
-            })
+    override suspend fun save(post: Post) {
+        val response = PostApi.service.save(post)
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
+        val posts = response.body() ?: throw RuntimeException("body is null")
+        postDao.insert(PostEntity.fromDto(posts))
     }
 
-    override fun likeById(id: Long, postsCallback: PostRepository.PostsCallback<Post>) {
-        PostApi.service.likeById(id)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    if (!response.isSuccessful) {
-                        postsCallback.onError(RuntimeException(response.message()))
-                        return
-                    }
-                    postsCallback.onSuccess(
-                        response.body() ?: throw RuntimeException("Body is null")
-                    )
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    postsCallback.onError(RuntimeException(t))
-                }
-
-            })
+    override suspend fun removeById(id: Long) {
+        postDao.removeById(id)
+        val response = PostApi.service.deletePostById(id)
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
     }
 
-
-    override fun unlikeById(id: Long, postsCallback: PostRepository.PostsCallback<Post>) {
-        PostApi.service.unlikeById(id)
-            .enqueue(object : Callback<Post> {
-                override fun onResponse(call: Call<Post>, response: Response<Post>) {
-                    if (!response.isSuccessful) {
-                        postsCallback.onError(RuntimeException(response.message()))
-                        return
-                    }
-                    postsCallback.onSuccess(
-                        response.body() ?: throw RuntimeException("Body is null")
-                    )
-                }
-
-                override fun onFailure(call: Call<Post>, t: Throwable) {
-                    postsCallback.onError(RuntimeException(t))
-                }
-            })
+    override suspend fun unlikeById(id: Long) {
+        postDao.likeById(id)
+        val response = PostApi.service.unlikeById(id)
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
     }
 }
+
+
 
 
 

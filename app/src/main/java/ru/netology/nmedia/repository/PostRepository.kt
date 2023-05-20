@@ -5,14 +5,12 @@ import ru.netology.nmedia.dto.Post
 import javax.security.auth.callback.Callback
 
 interface PostRepository {
-    fun getAllAsync(postsCallback:PostsCallback<List<Post>>)
-    fun likeById(id: Long,postsCallback: PostsCallback<Post>)
-    fun save(post: Post, postsCallback: PostsCallback<Post>)
-    fun removeById(id: Long, postsCallback: PostsCallback<Unit>)
-    fun unlikeById(id: Long,postsCallback: PostsCallback<Post>)
 
-    interface PostsCallback<T> {
-        fun onSuccess(value: T)
-        fun onError(e: Exception)
-    }
+    val data: LiveData<List<Post>>
+    suspend fun getAll()
+    suspend fun likeById(id: Long)
+    suspend fun save(post: Post)
+    suspend fun removeById(id: Long)
+    suspend fun unlikeById(id: Long)
+
 }
