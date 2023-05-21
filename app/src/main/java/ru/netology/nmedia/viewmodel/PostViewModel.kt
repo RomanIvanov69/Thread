@@ -113,4 +113,3 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 }
 
-
