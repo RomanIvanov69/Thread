@@ -24,7 +24,6 @@ class FeedFragment : Fragment() {
     val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
-    lateinit var swipeCase: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,

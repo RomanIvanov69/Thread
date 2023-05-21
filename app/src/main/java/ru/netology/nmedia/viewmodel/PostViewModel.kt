@@ -17,12 +17,12 @@ import ru.netology.nmedia.util.SingleLiveEvent
 
 private val empty = Post(
     id = 0,
-    author = "Me",
     content = "",
-    published = 0L,
+    author = "",
+    authorAvatar = "",
     likedByMe = false,
     likes = 0,
-    authorAvatar = null
+    published = ""
 )
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
