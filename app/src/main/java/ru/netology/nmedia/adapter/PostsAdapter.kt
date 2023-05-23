@@ -48,7 +48,7 @@ class PostViewHolder(
             content.text = post.content
             // в адаптере
             like.isChecked = post.likedByMe
-            like.text = clickCount(post.likes)
+            like.text = "${post.likes}"
 
 
             menu.setOnClickListener {
